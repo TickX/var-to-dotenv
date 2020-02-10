@@ -2,10 +2,24 @@ import * as core from '@actions/core'
 import fs, { PathLike } from "fs";
 import dotenv, { DotenvParseOutput } from "dotenv";
 
-export const write = (key: string, value: string, to: PathLike, nullable: boolean) => {
-    if (!value && !nullable) {
-        core.info(`Skipping '${key}' as it is not nullable but has no value`);
-        return;
+export const write = (
+    key: string,
+    value: string,
+    defaultValue: string,
+    to: PathLike,
+    nullable: boolean = true
+): void => {
+    if (value === '') {
+        value = defaultValue;
+
+        if (value === '') {
+            if (!nullable) {
+                core.info(`Skipping '${key}' as it is not nullable and has no value`);
+                return;
+            }
+
+            core.info(`Writing empty variable '${key}'`);
+        }
     }
 
     core.setSecret(value);
@@ -23,19 +37,14 @@ export const write = (key: string, value: string, to: PathLike, nullable: boolea
     fs.writeFileSync(to, envVars);
 };
 
-export function run() {
-    try {
-        const value = core.getInput('value');
-
-        write(
-            core.getInput('key'),
-            value === '' ? core.getInput('default') : value,
-            core.getInput('envPath'),
-            core.getInput('nullable') === 'true'
-        );
-    } catch (error) {
-        core.setFailed(error);
-    }
+try {
+    write(
+        core.getInput('key'),
+        core.getInput('value'),
+        core.getInput('default'),
+        core.getInput('envPath'),
+        core.getInput('nullable') === 'true'
+    );
+} catch (error) {
+    core.setFailed(error);
 }
-
-run();

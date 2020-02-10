@@ -189,7 +189,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const fs_1 = __importDefault(__webpack_require__(747));
 const dotenv_1 = __importDefault(__webpack_require__(63));
-exports.write = (key, value, to) => {
+exports.write = (key, value, defaultValue, to, nullable = true) => {
+    if (value === '') {
+        value = defaultValue;
+        if (value === '') {
+            if (!nullable) {
+                core.info(`Skipping '${key}' as it is not nullable and has no value`);
+                return;
+            }
+            core.info(`Writing empty variable '${key}'`);
+        }
+    }
     core.setSecret(value);
     core.exportVariable(key, value);
     let content = { [key]: value };
@@ -201,17 +211,12 @@ exports.write = (key, value, to) => {
         .join('\n');
     fs_1.default.writeFileSync(to, envVars);
 };
-function run() {
-    try {
-        const value = core.getInput('value');
-        exports.write(core.getInput('key'), value === '' ? core.getInput('default') : value, core.getInput('envPath'));
-    }
-    catch (error) {
-        core.setFailed(error);
-    }
+try {
+    exports.write(core.getInput('key'), core.getInput('value'), core.getInput('default'), core.getInput('envPath'), core.getInput('nullable') === 'true');
 }
-exports.run = run;
-run();
+catch (error) {
+    core.setFailed(error);
+}
 
 
 /***/ }),

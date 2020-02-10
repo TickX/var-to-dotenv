@@ -9,7 +9,7 @@ A GitHub action that appends a variable to a dotenv file.
 
 ```yaml
 steps:
-  - uses: TickX/var-to-dotenv@v1.0.0
+  - uses: TickX/var-to-dotenv@v1.1.1
     with:
       key: 'SOME_API_URI' # [Required]
       value: ${{secrets.SOME_API_URI}} # [Required]
