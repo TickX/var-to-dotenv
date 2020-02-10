@@ -10,6 +10,10 @@ inputs:
   default:
     description: 'A default value for the key (if `value` is empty, this is used instead)'
     required: false
+  nullable:
+    description: 'If false, and the value resolved is empty, the variable will be omitted'
+    required: false
+    default: 'true'
   envPath:
     description: 'File path to write variable to'
     required: false

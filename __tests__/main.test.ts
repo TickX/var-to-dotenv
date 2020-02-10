@@ -1,10 +1,15 @@
 import * as core from '@actions/core'
-import fs from "fs";
+import * as fs from "fs";
 import * as sinon from "sinon";
+import * as action from "../src/main";
 
 jest.mock('@actions/core');
 
-const action = require('../src/main');
+const runAction = (times: number = 1) => {
+    for (let count = 0; count < times; count++) {
+        action.run();
+    }
+};
 
 describe('Action run', () => {
     beforeEach(() => {
@@ -15,7 +20,7 @@ describe('Action run', () => {
         const error = new Error('wtf');
         sinon.stub(action, 'write').throws(error);
 
-        action.run();
+        runAction();
 
         expect(core.setFailed).toHaveBeenCalledWith(error);
     });
@@ -53,8 +58,7 @@ describe('Action run', () => {
             .onFirstCall().returns('value_1')
             .onSecondCall().returns('value_2');
 
-        action.run();
-        action.run();
+        runAction(2);
     });
 
     it('should use default if value is empty', async () => {
@@ -66,6 +70,28 @@ describe('Action run', () => {
             .withArgs('value').returns('')
             .withArgs('default').returns('default_value_1');
 
-        action.run();
+        runAction();
+    });
+
+    it('should skip non-nullable keys', async () => {
+        expectedFilePath = __dirname + '/results/expected-3.env';
+
+        sinon.stub(core, 'getInput')
+            .withArgs('envPath').returns(envPath)
+            .withArgs('default').returns('')
+            .withArgs('key')
+            .onFirstCall().returns('KEY_1')
+            .onSecondCall().returns('KEY_2')
+            .onThirdCall().returns('KEY_3')
+            .withArgs('value')
+            .onFirstCall().returns('value_1')
+            .onSecondCall().returns('')
+            .onThirdCall().returns('')
+            .withArgs('nullable')
+            .onFirstCall().returns('false')
+            .onSecondCall().returns('false')
+            .onThirdCall().returns('true');
+
+        runAction(3);
     });
 });

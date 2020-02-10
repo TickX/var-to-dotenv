@@ -14,6 +14,7 @@ steps:
       key: 'SOME_API_URI' # [Required]
       value: ${{secrets.SOME_API_URI}} # [Required]
       default: 'https://api.alt.com' # [Optional] if `value` is empty, this is used instead
+      nullable: 'false' # [Optional] if the resolved value is empty, the variable will be omitted
       envPath: '.env' # [Optional] The path to the dotenv file (defaults to `.env`)
 ```
 
