@@ -1,0 +1,22 @@
+name: 'Variable to Dotenv'
+description: 'Appends a variable to a dotenv file'
+inputs:
+  key:
+    description: 'Name of key'
+    required: true
+  value:
+    description: 'Value of key'
+    required: true
+  default:
+    description: 'A default value for the key (if `value` is empty, this is used instead)'
+    required: false
+  envPath:
+    description: 'File path to write variable to'
+    required: false
+    default: '.env'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'lock'
+  color: 'gray-dark'

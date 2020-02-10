@@ -1,0 +1,23 @@
+on: [push]
+
+name: Test
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '11.x'
+      - uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - run: npm install
+      - run: npm run test
+      - run: npm run build
