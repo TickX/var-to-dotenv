@@ -187,32 +187,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const fs_1 = __importDefault(__webpack_require__(747));
+const fs = __importStar(__webpack_require__(747));
 const dotenv_1 = __importDefault(__webpack_require__(63));
-exports.write = (key, value, defaultValue, to, nullable = true) => {
+exports.write = (variable) => {
+    let value = variable.value !== '' ? variable.value : variable.defaultValue;
     if (value === '') {
-        value = defaultValue;
-        if (value === '') {
-            if (!nullable) {
-                core.info(`Skipping '${key}' as it is not nullable and has no value`);
-                return;
-            }
-            core.info(`Writing empty variable '${key}'`);
+        if (!variable.isNullable) {
+            core.info(`Skipping '${variable.key}' as it is not nullable and has no value`);
+            return;
         }
+        core.info(`Writing empty variable '${variable.key}'`);
     }
     core.setSecret(value);
-    core.exportVariable(key, value);
-    let content = { [key]: value };
-    if (fs_1.default.existsSync(to)) {
-        content = Object.assign(Object.assign({}, dotenv_1.default.parse(fs_1.default.readFileSync(to))), content);
+    core.exportVariable(variable.key, value);
+    let content = { [variable.key]: value };
+    if (fs.existsSync(variable.filePath)) {
+        content = Object.assign(Object.assign({}, dotenv_1.default.parse(fs.readFileSync(variable.filePath))), content);
     }
     const envVars = Object.entries(content)
         .map(([key, value]) => `${key}=${value}`)
         .join('\n');
-    fs_1.default.writeFileSync(to, envVars);
+    fs.writeFileSync(variable.filePath, envVars);
 };
 try {
-    exports.write(core.getInput('key'), core.getInput('value'), core.getInput('default'), core.getInput('envPath'), core.getInput('nullable') === 'true');
+    exports.write({
+        key: core.getInput('key'),
+        value: core.getInput('value'),
+        defaultValue: core.getInput('default'),
+        filePath: core.getInput('envPath'),
+        isNullable: core.getInput('nullable') === 'true'
+    });
 }
 catch (error) {
     core.setFailed(error);

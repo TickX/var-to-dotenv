@@ -1,7 +1,7 @@
+jest.mock('@actions/core');
+
 import * as fs from "fs";
 import { write } from "../src/main";
-
-jest.mock('@actions/core');
 
 describe('Action run', () => {
     const envPath = __dirname + '/.env';
@@ -24,21 +24,60 @@ describe('Action run', () => {
     it('should write variables to env', () => {
         expectedFilePath = __dirname + '/results/expected.env';
 
-        write('KEY_1', 'value_1', '', envPath);
-        write('KEY_2', 'value_2', '', envPath);
+        write({
+            key: 'KEY_1',
+            value: 'value_1',
+            defaultValue: '',
+            filePath: envPath,
+            isNullable: false
+        });
+
+        write({
+            key: 'KEY_2',
+            value: 'value_2',
+            defaultValue: '',
+            filePath: envPath,
+            isNullable: false
+        });
     });
 
     it('should use default if value is empty', async () => {
         expectedFilePath = __dirname + '/results/expected-2.env';
 
-        write('KEY_1', '', 'default_value_1', envPath);
+        write({
+            key: 'KEY_1',
+            value: '',
+            defaultValue: 'default_value_1',
+            filePath: envPath,
+            isNullable: false
+        });
     });
 
     it('should skip non-nullable keys', async () => {
         expectedFilePath = __dirname + '/results/expected-3.env';
 
-        write('KEY_1', 'value_1', '', envPath, false);
-        write('KEY_2', '', '', envPath, false);
-        write('KEY_3', '', '', envPath, true);
+        write({
+            key: 'KEY_1',
+            value: 'value_1',
+            defaultValue: '',
+            filePath: envPath,
+            isNullable: false
+        });
+
+        write({
+            key: 'KEY_2',
+            value: '',
+            defaultValue: '',
+            filePath: envPath,
+            isNullable: false
+        });
+
+        write({
+            key: 'KEY_3',
+            value: '',
+            defaultValue: '',
+            filePath: envPath,
+            isNullable: true
+        });
     });
 });
