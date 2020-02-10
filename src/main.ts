@@ -19,9 +19,10 @@ export const write = (variable: Variable): void => {
         }
 
         core.info(`Writing empty variable '${variable.key}'`);
+    } else {
+        core.setSecret(value);
     }
 
-    core.setSecret(value);
     core.exportVariable(variable.key, value);
 
     let content: DotenvParseOutput = {[variable.key]: value};

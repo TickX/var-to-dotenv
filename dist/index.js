@@ -198,7 +198,9 @@ exports.write = (variable) => {
         }
         core.info(`Writing empty variable '${variable.key}'`);
     }
-    core.setSecret(value);
+    else {
+        core.setSecret(value);
+    }
     core.exportVariable(variable.key, value);
     let content = { [variable.key]: value };
     if (fs.existsSync(variable.filePath)) {
