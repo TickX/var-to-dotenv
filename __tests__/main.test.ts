@@ -80,4 +80,16 @@ describe('Action run', () => {
             isNullable: true
         });
     });
+
+    it('should add quotes around value containing space(s)', async () => {
+        expectedFilePath = __dirname + '/results/expected-4.env';
+
+        write({
+            key: 'KEY_1',
+            value: 'value with spaces',
+            defaultValue: 'default_value_1',
+            filePath: envPath,
+            isNullable: false
+        });
+    });
 });
