@@ -31,7 +31,7 @@ export const write = (variable: Variable): void => {
     }
 
     const envVars = Object.entries(content)
-        .map(([key, value]) => `${key}=${value}`)
+        .map(([key, value]) => key + '=' + (/\s/.test(value) ? '"' + value + '"' : value))
         .join('\n');
 
     fs.writeFileSync(variable.filePath, envVars);
