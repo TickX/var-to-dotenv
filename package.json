@@ -9,13 +9,13 @@
     "test": "npx jest"
   },
   "dependencies": {
-    "@actions/core": "^1.2.2",
+    "@actions/core": "^1.2.6",
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
     "@types/jest": "^25.1.1",
     "@types/node": "^13.7.0",
-    "@zeit/ncc": "^0.21.0",
+    "@vercel/ncc": "^0.25.1",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.7.5"
