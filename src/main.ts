@@ -45,6 +45,6 @@ try {
         filePath: core.getInput('envPath'),
         isNullable: core.getInput('nullable') === 'true'
     });
-} catch (error) {
+} catch (error: any) {
     core.setFailed(error);
 }
